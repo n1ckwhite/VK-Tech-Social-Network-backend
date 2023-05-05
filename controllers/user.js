@@ -62,6 +62,7 @@ const register = async (req,res) => {
                     city: 'null',
                     description: 'null',
                     univ: 'null',
+                    posts: {},
                     age: 0,
                 },
             })
@@ -82,7 +83,29 @@ const register = async (req,res) => {
     }
 }
 
+const getUser = async (req,res) => {
+    try {
+        const {id} = req.params
+        const user = await prisma.user.findUnique({
+            where: {
+               id
+            },
+            include: {
+                posts: true
+            }
+        })
+       res.status(200).json(user)
+    }
+    catch(error) {
+        res.status(500).json({ message: "Что-то пошло не так" });
+    }
+}
+
+
+
+
 module.exports = {
     login,
-    register
+    register,
+    getUser,
 }
