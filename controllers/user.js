@@ -96,16 +96,43 @@ const getUser = async (req,res) => {
         })
        res.status(200).json(user)
     }
-    catch(error) {
+    catch{
         res.status(500).json({ message: "Что-то пошло не так" });
     }
 }
 
+const editUser = async (req,res) => {
+    try {
+        const {id,photo,city,description,univ,age} = req.body
+        if(!id) {
+            return res.status(400).json({
+                message: 'Не удалось отредактировать профиль'
+            })
+        }
+        const user = await prisma.user.update({
+            where: {
+                id
+            },
+            data: {
+                photo,
+                city,
+                description,
+                univ,
+                age
+            }
+        })
+        res.status(200).json(user)
+    }
 
+    catch{
+         res.status(500).json({ message: "Что-то пошло не так" });
 
+    }
+}
 
 module.exports = {
     login,
     register,
     getUser,
+    editUser
 }
