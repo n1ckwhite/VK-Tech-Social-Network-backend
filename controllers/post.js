@@ -35,7 +35,7 @@ const editPost = async (req, res) => {
     try {
     const {id} = req.params
         const {photo,description, likes} = req.body
-        if(!photo || !description || !likes) {
+        if(!id) {
             return res.status(400).json({
                 message: "Не удалось отредактировать пост"
             })
