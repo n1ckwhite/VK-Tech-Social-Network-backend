@@ -33,17 +33,28 @@ const addPost = async (req,res) => {
 
 const editPost = async (req, res) => {
     try {
-        const p = await prisma.post.update({
+    const {id} = req.params
+        const {photo,description, likes} = req.body
+        if(!photo || !description || !likes) {
+            return res.status(400).json({
+                message: "Не удалось отредактировать пост"
+            })
+        }
+        const post = await prisma.post.update({
             where: {
-                id: req.body.id
+                id,
             },
-            data: { description: true},
+            data: {
+                photo,
+                description,
+                likes
+            }
         })
-        res.status(204).json(p)
-
-    } catch(error) {
-        // res.status(400).json({ message: "Неудалось редактировать сотрудника" });
-        console.log(error)
+        res.status(200).json(post)
+    }  catch {
+        return res.status(500).json({
+            message: "Что-то пошло не так"
+        })
     }
 };
 

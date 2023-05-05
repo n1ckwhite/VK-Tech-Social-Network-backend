@@ -5,6 +5,6 @@ const router = express.Router()
 
 
 router.post('/add', auth , addPost)
-router.put('/edit/:id', auth, () => console.log('Изменить пост'))
+router.put('/edit/:id', auth, editPost)
 router.delete('/delete/:id', auth, () => console.log('Удалить пост'))
 module.exports = router
