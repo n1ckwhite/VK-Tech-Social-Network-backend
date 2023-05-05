@@ -14,10 +14,13 @@ datasource db {
 model User {
   id String @id @default(uuid())
   email String
+  password String
   name String
   photo String
   city String
   description String
+  univ String
+  age Int
   posts Post[]
 }
 
@@ -29,3 +32,4 @@ model Post {
   author User @relation(fields: [authorId], references: [id])
   authorId String
 }
+
