@@ -275,6 +275,32 @@ const searchUser = async (req,res) => {
     }
 }
 
+const friendsMe = async (req,res) => {
+    try {
+        const {id} = req.body
+        if (!id) {
+            return res.status(400).json({
+                message: "Не удалось отобразить друзей!"
+            })
+        }
+        const friendsMe = await prisma.user.findFirst({
+            where: {
+                id
+            },
+            select: {
+                friends: true
+            }
+        })
+        res.status(200).json(friendsMe.friends)
+    }
+
+    catch {
+       res.status(500).json({
+           message: "Что-то пошло не так :("
+       })
+    }
+}
+
 module.exports = {
     login,
     register,
@@ -282,5 +308,6 @@ module.exports = {
     editUser,
     addFriend,
     deleteFriend,
-    searchUser
+    searchUser,
+    friendsMe
 }
