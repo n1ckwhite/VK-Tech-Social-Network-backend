@@ -1,6 +1,7 @@
 const {prisma} = require('../prisma/prisma-client')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+
 const login = async (req,res) => {
     try {
     const {email,password} = req.body
@@ -63,6 +64,7 @@ const register = async (req,res) => {
                     description: 'null',
                     univ: 'null',
                     posts: {},
+                    friends: {},
                     age: 0,
                 },
             })
@@ -91,7 +93,8 @@ const getUser = async (req,res) => {
                id
             },
             include: {
-                posts: true
+                posts: true,
+                friends: true
             }
         })
        res.status(200).json(user)
@@ -130,9 +133,102 @@ const editUser = async (req,res) => {
     }
 }
 
+const addFriend = async (req,res) => {
+    try {
+        const {id} = req.body
+        const idUser = req.params.id
+        if(!id && !idUser) {
+            return res.status(400).json({
+                message: "Не удалось добавить в друзья"
+            })
+        }
+
+        const friendU = await prisma.user.findUnique({
+            where: {
+                id: idUser
+            }
+        })
+        const result = await prisma.friend.findFirst({
+            where: {
+                friendId: idUser
+            }
+        })
+        if(result) {
+            res.status(400).json({
+                message: 'Пользователь уже добавлен в друзья!'
+            })
+        } else {
+            const me = await prisma.user.update({
+                where: {
+                    id
+                },
+                include: {
+                    friends: true,
+                },
+                data: {
+                    friends: {
+                        create: {
+                            friendName: friendU.name,
+                            friendPhoto: friendU.photo,
+                            friendAge: friendU.age,
+                            friendId: idUser
+                        }
+                    }
+                },
+            })
+            res.status(200).json({
+                message: "Пользователь добавлен в друзья!"
+            })
+        }
+    }
+
+    catch {
+        res.status(500).json({
+            message: "Что-то пошло не так :("
+         })
+    }
+}
+
+const deleteFriend = async (req,res) => {
+    try {
+        const {id} = req.body
+        const idUser = req.params.id
+
+        if(!id && !idUser) {
+            return res.status(400).json({
+                message: "Не удалось удалить из друзей"
+            })
+        }
+        const findUser = await prisma.friend.findFirst({
+            where: {
+                friendId: idUser
+            }
+        })
+        if(findUser) {
+            const me = await prisma.friend.delete({
+                where: {
+                    id: findUser.id
+                }
+            })
+            res.status(200).json({
+                message: "Пользователь удален!"
+            })
+        }
+    }
+
+    catch {
+        res.status(500).json({
+            message: "Что-то пошло не так :("
+        })
+    }
+}
+
+
 module.exports = {
     login,
     register,
     getUser,
-    editUser
+    editUser,
+    addFriend,
+    deleteFriend
 }

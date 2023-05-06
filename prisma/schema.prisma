@@ -22,6 +22,7 @@ model User {
   univ String
   age Int
   posts Post[]
+  friends Friend[]
 }
 
 model Post {
@@ -33,3 +34,11 @@ model Post {
   authorId String
 }
 
+model Friend {
+  id  Int  @id @default(autoincrement())
+  friendId String
+  friendName String
+  friendPhoto String
+  friendAge Int
+  users User[]
+}
