@@ -96,11 +96,13 @@ const allPost = async (req,res) => {
                 email: true,
             }
         })
-        res.json(iam)
+        res.status(200).json(iam)
     }
 
-    catch (error) {
-        console.log(error)
+    catch {
+        res.status(500).json({
+            message: "Не удалось отобразить ленту!"
+        })
     }
 }
 
