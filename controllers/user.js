@@ -102,7 +102,7 @@ const getUser = async (req,res) => {
                 univ: true,
                 age: true,
                 posts: true,
-                friends: true
+                friends: true,
             },
         })
        res.status(200).json(user)
@@ -182,6 +182,7 @@ const addFriend = async (req,res) => {
                 },
                 include: {
                     friends: true,
+                    posts: true,
                 },
                 data: {
                     friends: {
@@ -300,6 +301,7 @@ const friendsMe = async (req,res) => {
        })
     }
 }
+
 
 module.exports = {
     login,

@@ -25,6 +25,15 @@ model User {
   friends Friend[]
 }
 
+model Friend {
+  id  Int  @id @default(autoincrement())
+  friendId String
+  friendName String
+  friendPhoto String
+  friendAge Int
+  users User[]
+}
+
 model Post {
   id String @id @default(uuid())
   description String
@@ -34,11 +43,6 @@ model Post {
   authorId String
 }
 
-model Friend {
-  id  Int  @id @default(autoincrement())
-  friendId String
-  friendName String
-  friendPhoto String
-  friendAge Int
-  users User[]
-}
+
+
+

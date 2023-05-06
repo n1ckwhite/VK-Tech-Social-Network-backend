@@ -20,9 +20,12 @@ const addPost = async (req,res) => {
                         photo: data.photo
                     }
                 }
-            }
+            },
+
         })
-        res.status(201).json(post)
+        res.status(201).json({
+            message: "Пост добавлен!"
+        })
     }
     catch {
         return res.status(500).json({
@@ -50,7 +53,9 @@ const editPost = async (req, res) => {
                 likes
             }
         })
-        res.status(200).json(post)
+        res.status(200).json({
+            message: "Пост отредактирован"
+        })
     }  catch {
         return res.status(500).json({
             message: "Что-то пошло не так"
@@ -81,11 +86,28 @@ const deletePost = async (req,res) => {
     }
 }
 
+const allPost = async (req,res) => {
+    try {
+        const iam = await prisma.user.findMany({
+            select: {
+                posts: true,
+                photo: true,
+                name: true,
+                email: true,
+            }
+        })
+        res.json(iam)
+    }
 
+    catch (error) {
+        console.log(error)
+    }
+}
 
 
 module.exports = {
     addPost,
     editPost,
     deletePost,
+    allPost
 }
