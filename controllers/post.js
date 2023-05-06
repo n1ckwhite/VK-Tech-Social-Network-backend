@@ -106,10 +106,46 @@ const allPost = async (req,res) => {
     }
 }
 
+const like = async (req,res) => {
+    try {
+        const {id} = req.params
+        const {like} = req.body
+        if(!id && !like) {
+            return res.status(400).json({
+                message: "Не удалось поставить лайк"
+            })
+        }
+        const likePost = await prisma.post.update({
+            where: {
+                id
+            },
+            data: {
+                likes: like
+            }
+        })
+        if(like === 1) {
+            res.status(201).json({
+                message: "Лайк поставлен!"
+            })
+        } else {
+            res.status(201).json({
+                message: "Лайк удален!"
+            })
+        }
+
+    }
+    catch{
+        res.status(500).json({
+            message: "Что-то пошло не так :("
+        })
+    }
+}
+
 
 module.exports = {
     addPost,
     editPost,
     deletePost,
-    allPost
+    allPost,
+    like,
 }
