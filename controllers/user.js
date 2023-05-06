@@ -92,10 +92,18 @@ const getUser = async (req,res) => {
             where: {
                id
             },
-            include: {
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                photo: true,
+                city: true,
+                description: true,
+                univ: true,
+                age: true,
                 posts: true,
                 friends: true
-            }
+            },
         })
        res.status(200).json(user)
     }
@@ -122,6 +130,16 @@ const editUser = async (req,res) => {
                 description,
                 univ,
                 age
+            },
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                photo: true,
+                city: true,
+                description: true,
+                univ: true,
+                age: true,
             }
         })
         res.status(200).json(user)
@@ -224,11 +242,45 @@ const deleteFriend = async (req,res) => {
 }
 
 
+const searchUser = async (req,res) => {
+    try {
+        const {name} = req.body
+        if(!name) {
+            return res.status(400).json({
+                message: "Введите имя пользователя"
+            })
+        }
+        const findUser = await prisma.user.findMany({
+            where: {
+                name
+            },
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                photo: true,
+                city: true,
+                description: true,
+                univ: true,
+                age: true
+            }
+        })
+        res.status(200).json(findUser)
+    }
+
+    catch {
+        res.status(500).json({
+            message: "Что-то пошло не так :("
+        })
+    }
+}
+
 module.exports = {
     login,
     register,
     getUser,
     editUser,
     addFriend,
-    deleteFriend
+    deleteFriend,
+    searchUser
 }
