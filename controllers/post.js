@@ -3,7 +3,7 @@ const { prisma } = require("../prisma/prisma-client");
 const addPost = async (req, res) => {
   try {
     const data = req.body;
-    if (!data.description || !data.photo) {
+    if (!data.description && !data.photo) {
       return res.status(400).json({
         message: "Все поля обязательные",
       });
@@ -35,7 +35,7 @@ const addPost = async (req, res) => {
 const editPost = async (req, res) => {
   try {
     const { id } = req.params;
-    const { photo, description, likes } = req.body;
+    const { photo, description } = req.body;
     if (!id) {
       return res.status(400).json({
         message: "Не удалось отредактировать пост",
@@ -48,7 +48,6 @@ const editPost = async (req, res) => {
       data: {
         photo,
         description,
-        likes,
       },
     });
     res.status(200).json({
@@ -86,10 +85,12 @@ const allPost = async (req, res) => {
   try {
     const iam = await prisma.user.findMany({
       select: {
+        id: true,
         posts: true,
         photo: true,
         name: true,
         email: true,
+        friends: true,
       },
     });
     res.status(200).json(iam);
@@ -117,7 +118,7 @@ const like = async (req, res) => {
         likes: like,
       },
     });
-    if (like === 1) {
+    if (like >= 1) {
       res.status(201).json({
         message: "Лайк поставлен!",
       });
