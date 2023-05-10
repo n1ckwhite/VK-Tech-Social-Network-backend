@@ -23,7 +23,7 @@
  - Cors,
  - Nodemon,
  - Prisma,
- - SQL3
+ - SQL
 
 ## Доработать:
 - Лайки,
